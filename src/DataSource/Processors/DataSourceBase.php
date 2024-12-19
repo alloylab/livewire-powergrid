@@ -243,6 +243,8 @@ class DataSourceBase
 
         $this->component->columns = collect($this->component->columns)
             ->map(function (array|\stdClass|Column $column) use ($results, $applySummaryFormat) {
+                $column = (array) $column;
+
                 $field = strval(data_get($column, 'dataField')) ?: strval(data_get($column, 'field'));
 
                 $summaries = ['sum', 'count', 'avg', 'min', 'max'];
