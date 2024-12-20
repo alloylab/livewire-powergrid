@@ -229,21 +229,19 @@ class DataSourceBase
                             throw new \InvalidArgumentException('Summary Formatter expects a callable function, ' . gettype($formattingClosure) . ' given instead.');
                         }
 
-                        if (in_array($fieldName, [$column['field'], $column['dataField']])) {
+                        if (in_array($fieldName, [$column->field, $column->dataField])) {
                             $value = $formattingClosure($value);
                         }
 
                         data_set($column, 'properties.summarize_values.' . $summarizeMethod, $value);
                     }
                 }
-
-                return $column;
             }
         };
 
         $this->component->columns = collect($this->component->columns)
             ->map(function (array|\stdClass|Column $column) use ($results, $applySummaryFormat) {
-                $column = (array) $column;
+                $column = (object) $column;
 
                 $field = strval(data_get($column, 'dataField')) ?: strval(data_get($column, 'field'));
 
@@ -252,8 +250,7 @@ class DataSourceBase
                 foreach ($summaries as $summary) {
                     if (data_get($column, 'properties.summarize.' . $summary . '.header') || data_get($column, 'properties.summarize.' . $summary . '.footer')) {
                         $value = $results->{$summary}($field);
-                        $newColumn = rescue(fn () => $applySummaryFormat($summary, $column, $field, $value), report: false);
-                        $column = is_null($newColumn) ? $column : $newColumn;
+                        rescue(fn () => $applySummaryFormat($summary, $column, $field, $value), report: false);
                     }
                 }
 
