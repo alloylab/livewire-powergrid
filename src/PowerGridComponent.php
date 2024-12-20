@@ -71,11 +71,6 @@ class PowerGridComponent extends Component
         DataSourceBase::$actionsHtml = [];
     }
 
-    public function dehydrate(): void
-    {
-        $this->columns = $this->columns();
-    }
-
     public function fetchDatasource(): void
     {
         $this->readyToLoad = true;
