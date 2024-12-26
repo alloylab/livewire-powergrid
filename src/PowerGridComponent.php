@@ -128,7 +128,7 @@ class PowerGridComponent extends Component
             return collect();
         }
 
-        if (boolval(data_get($this->setUp, 'cache.enabled')) && Cache::supportsTags()) {
+        if (boolval(data_get($this->setUp, 'cache.enabled'))) {
             return $this->getRecordsFromCache();
         }
 
@@ -137,14 +137,12 @@ class PowerGridComponent extends Component
 
     private function getRecordsFromCache(): mixed
     {
-        $prefix    = strval(data_get($this->setUp, 'cache.prefix'));
-        $customTag = strval(data_get($this->setUp, 'cache.tag'));
+        $prefix    = 'powergrid_' . strval(data_get($this->setUp, 'cache.prefix'));
         $ttl       = intval(data_get($this->setUp, 'cache.ttl'));
 
-        $tag      = $prefix . ($customTag ?: 'powergrid-' . $this->datasource()->getModel()->getTable() . '-' . $this->tableName);
-        $cacheKey = implode('-', $this->getCacheKeys());
+        $cacheKey = $prefix . '_' . implode('-', $this->getCacheKeys());
 
-        $results = Cache::tags($tag)->remember($cacheKey, $ttl, fn () => ProcessDataSource::make($this)->get());
+        $results = Cache::remember($cacheKey, $ttl, fn () => ProcessDataSource::make($this)->get());
 
         if ($this->measurePerformance) {
             app(Dispatcher::class)->dispatch(

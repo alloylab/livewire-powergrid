@@ -10,8 +10,6 @@ final class Cache implements Wireable
 
     public bool $enabled = true;
 
-    public string $tag = '';
-
     public int $ttl = 300;
 
     public string $prefix = '';
@@ -19,13 +17,6 @@ final class Cache implements Wireable
     public function disabled(): Cache
     {
         $this->enabled = false;
-
-        return $this;
-    }
-
-    public function customTag(string $tag): Cache
-    {
-        $this->tag = $tag;
 
         return $this;
     }
