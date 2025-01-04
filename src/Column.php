@@ -239,7 +239,7 @@ final class Column implements \Livewire\Wireable
     public function editOnClick(
         bool $hasPermission = true,
         string $dataField = '',
-        string $fallback = null,
+        string|null $fallback = null,
         bool $saveOnMouseOut = false
     ): Column {
         $this->editable = [
